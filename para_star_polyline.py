@@ -1,12 +1,12 @@
-#Parametric GCode Example 8: Snowflake Curve
+#Parametric GCode Star
 #
+#Generates a six pointed star in GCode.
+#Goal is to generate snowflakes algorithmically.
 #
-#Going to go pretty crazy here!
+#This code is derived from Allan Ecker's
+#source: http://www.thingiverse.com/thing:849
 #
-#Recursive algorithm will provide relative coordinates.
-# We'll translate them into absolutes and then spit
-# them into the GCode file to render the fractal in plastic!
-
+#License: CC-BY-SA
 
 #Import the math library
 import math
