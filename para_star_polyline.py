@@ -98,6 +98,11 @@ class myPolyLine:
 	#reverse the order of the list of G1Codes
 	def reverse(self):
 		self.listofcodes.reverse()
+		
+	#bump whole list of G1Codes up in the z direction
+	def bumpZ(self, layer_thickness):
+		for gcode in self.listofcodes:
+			gcode.Z = gcode.Z + layer_thickness
 
 
 filename = "test.gcode"
@@ -174,6 +179,13 @@ for a in range(6):
 	ThisGCodeStar.extend(SpikyArm)
 
 FILE.writelines(str(ThisGCodeStar)) #output the whole snowflake (one layer)
+
+z_steps = 10
+layer_thickness = 0.4
+
+for z_step in range(z_steps):
+	ThisGCodeStar.bumpZ(layer_thickness)
+	FILE.writelines(str(ThisGCodeStar))
 
 FILE.writelines("M103\n")
 ThisGCode.Z = ThisGCode.Z + 10
