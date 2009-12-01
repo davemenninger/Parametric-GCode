@@ -9,7 +9,7 @@
 #License: CC-BY-SA
 
 #Import the math library
-import math
+import math, random
 
 
 #Rounding function
@@ -120,7 +120,8 @@ FILE.writelines("M101\n")
 #make half an arm with "spikes"
 arm_length = 16.0
 arm_thickness = 1.0
-num_spikes = 3 #num_spikes = random.randint(1,4)
+#num_spikes = 4
+num_spikes = random.randint(1,4)
 gap_size = (arm_length/num_spikes)/2.0
 
 SpikyArm = myPolyLine()
@@ -128,7 +129,8 @@ ThisGCode = G1Code(X=arm_thickness/2.0, Y=arm_thickness/2.0, Z=0, F=1500)
 SpikyArm.append(ThisGCode)
 
 for spike_n in range(0,num_spikes):
-	spike_length = arm_length/2.0 #spike_length = something random
+	#spike_length = arm_length/2.0
+	spike_length = random.random()*(arm_length/2.0)
 	x1 = gap_size*((spike_n*2))
 	y1 = arm_thickness/2.0
 	x2 = x1 + spike_length*math.cos(math.radians(30.0))
@@ -159,7 +161,7 @@ SpikyArm.extend(otherHalf)
 
 #join together 6 rotated copies of the spiky arm
 ThisGCodeStar = myPolyLine()
-for a in range(2):
+for a in range(6):
 	SpikyArm.rotate(math.radians(60))
 	ThisGCodeStar.extend(SpikyArm)
 
