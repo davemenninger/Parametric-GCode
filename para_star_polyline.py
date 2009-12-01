@@ -117,39 +117,35 @@ FILE.writelines("M108 S225.0\n")
 FILE.writelines("M104 S230.0\n")
 FILE.writelines("M101\n")
 
-#build a single arm as a list of GCodes
-ThisGCodeArm = myPolyLine()
-ThisGCode = G1Code(X=0.5, Y=0.5, Z=0, F=1500)
-ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=0.5, Y=10, Z=0, F=1500)
-ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=0, Y=10.5, Z=0, F=1500)
-ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=-0.5, Y=10, Z=0, F=1500)
-ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=-0.5, Y=0.5, Z=0, F=1500)
-ThisGCodeArm.append(ThisGCode)
+#make half an arm with "spikes"
+arm_length = 10.0
+arm_thickness = 1.0
+num_spikes = 3
+gap_size = (arm_length/num_spikes)/2.0
+spike_length = arm_length/2.0
 
-#make an arm with "spikes"
 SpikyArm = myPolyLine()
-ThisGCode = G1Code(X=0.5, Y=0.5, Z=0, F=1500)
+ThisGCode = G1Code(X=arm_thickness/2.0, Y=arm_thickness/2.0, Z=0, F=1500)
 SpikyArm.append(ThisGCode)
-x1 = 2
-y1 = 0.5
-spike_length = 5
-x2 = spike_length*math.cos(math.radians(30))
-y2 = spike_length*math.sin(math.radians(30))
-x3 = x2
-y3 = 0.5
-ThisGCode = G1Code(X=x1, Y=y1, Z=0, F=1500)
-SpikyArm.append(ThisGCode)
-ThisGCode = G1Code(X=x2, Y=y2, Z=0, F=1500)
-SpikyArm.append(ThisGCode)
-ThisGCode = G1Code(X=x3, Y=y3, Z=0, F=1500)
-SpikyArm.append(ThisGCode)
+
+for spike_n in range(1,num_spikes+1):
+	x1 = gap_size*spike_n
+	y1 = arm_thickness/2.0
+	x2 = x1 + spike_length*math.cos(math.radians(30.0))
+	y2 = spike_length*math.sin(math.radians(30.0))
+	x3 = x1+ gap_size
+	y3 = arm_thickness/2.0
+	ThisGCode = G1Code(X=x1, Y=y1, Z=0, F=1500)
+	SpikyArm.append(ThisGCode)
+	ThisGCode = G1Code(X=x2, Y=y2, Z=0, F=1500)
+	SpikyArm.append(ThisGCode)
+	ThisGCode = G1Code(X=x3, Y=y3, Z=0, F=1500)
+	SpikyArm.append(ThisGCode)
+
 ThisGCode = G1Code(X=10, Y=0.5, Z=0, F=1500)
 SpikyArm.append(ThisGCode)
 
+#make a mirror image of the first half of the arm
 otherHalf = SpikyArm.Clone()
 otherHalf.mirrorX()
 otherHalf.reverse()
@@ -158,7 +154,6 @@ SpikyArm.extend(otherHalf)
 ThisGCodeStar = myPolyLine()
 
 for a in range(6):
-	#ThisGCodeArm.rotate(math.radians(60))
 	SpikyArm.rotate(math.radians(60))
 	ThisGCodeStar.extend(SpikyArm)
 
