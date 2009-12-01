@@ -8,7 +8,7 @@
 #
 #License: CC-BY-SA
 
-#Import the math library
+#Import the needed libraries
 import math, random
 
 
@@ -25,7 +25,7 @@ def myRound(num, r=0):
 		num = str(num)  
 		return num[:num.find('.')+r+1]
 
-#G1 Code Object
+#sG1 Code Object
 class G1Code:
 	def __init__(self, X=0, Y=0, Z=0, F=0):
 		self.X = X
@@ -68,29 +68,37 @@ class myPolyLine:
 			string_output += str(gcode) + "\n"
 		return string_output
 		
+	#add a single G1Code to the list
 	def append(self,gcode):
 		self.listofcodes.append(gcode)
 		
+	#add another myPolyLine to the end of this myPolyLine
 	def extend(self,polyline):
 		for gcode in polyline.listofcodes:
 			self.listofcodes.append(gcode.Clone())
 			
+	#method to make a clone of the myPolyLine
 	def Clone(self):
 		ClonePolyLine = myPolyLine()
 		for gcode in self.listofcodes:
 			ClonePolyLine.append(gcode.Clone())
 		return ClonePolyLine
 		
+	#rotate each individual G1Code within
 	def rotate(self,angle):
 		for gcode in self.listofcodes:
 			gcode.rotate(angle)
 			
+	#mirror the list of G1Codes around the x axis
+	#this may be a counter-intuitive name - rename to mirrorY?
 	def mirrorX(self):
 		for gcode in self.listofcodes:
 			gcode.Y = -1*(gcode.Y)
 			
+	#reverse the order of the list of G1Codes
 	def reverse(self):
 		self.listofcodes.reverse()
+
 
 filename = "test.gcode"
 
@@ -165,7 +173,7 @@ for a in range(6):
 	SpikyArm.rotate(math.radians(60))
 	ThisGCodeStar.extend(SpikyArm)
 
-FILE.writelines(str(ThisGCodeStar))
+FILE.writelines(str(ThisGCodeStar)) #output the whole snowflake (one layer)
 
 FILE.writelines("M103\n")
 ThisGCode.Z = ThisGCode.Z + 10
