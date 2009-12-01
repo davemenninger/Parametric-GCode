@@ -118,22 +118,22 @@ FILE.writelines("M104 S230.0\n")
 FILE.writelines("M101\n")
 
 #make half an arm with "spikes"
-arm_length = 10.0
+arm_length = 16.0
 arm_thickness = 1.0
-num_spikes = 3
+num_spikes = 3 #num_spikes = random.randint(1,4)
 gap_size = (arm_length/num_spikes)/2.0
-spike_length = arm_length/2.0
 
 SpikyArm = myPolyLine()
 ThisGCode = G1Code(X=arm_thickness/2.0, Y=arm_thickness/2.0, Z=0, F=1500)
 SpikyArm.append(ThisGCode)
 
-for spike_n in range(1,num_spikes+1):
-	x1 = gap_size*spike_n
+for spike_n in range(0,num_spikes):
+	spike_length = arm_length/2.0 #spike_length = something random
+	x1 = gap_size*((spike_n*2))
 	y1 = arm_thickness/2.0
 	x2 = x1 + spike_length*math.cos(math.radians(30.0))
 	y2 = spike_length*math.sin(math.radians(30.0))
-	x3 = x1+ gap_size
+	x3 = x1 + gap_size
 	y3 = arm_thickness/2.0
 	ThisGCode = G1Code(X=x1, Y=y1, Z=0, F=1500)
 	SpikyArm.append(ThisGCode)
@@ -142,7 +142,7 @@ for spike_n in range(1,num_spikes+1):
 	ThisGCode = G1Code(X=x3, Y=y3, Z=0, F=1500)
 	SpikyArm.append(ThisGCode)
 
-ThisGCode = G1Code(X=10, Y=0.5, Z=0, F=1500)
+ThisGCode = G1Code(X=arm_length, Y=arm_thickness/2.0, Z=0, F=1500)
 SpikyArm.append(ThisGCode)
 
 #make a mirror image of the first half of the arm
@@ -157,9 +157,9 @@ ThisGCode = G1Code(X=arm_length+(arm_length/10.0),Y=0,Z=0, F=1500)
 SpikyArm.append(ThisGCode)
 SpikyArm.extend(otherHalf)
 
+#join together 6 rotated copies of the spiky arm
 ThisGCodeStar = myPolyLine()
-
-for a in range(6):
+for a in range(2):
 	SpikyArm.rotate(math.radians(60))
 	ThisGCodeStar.extend(SpikyArm)
 
