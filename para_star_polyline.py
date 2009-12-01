@@ -149,6 +149,12 @@ SpikyArm.append(ThisGCode)
 otherHalf = SpikyArm.Clone()
 otherHalf.mirrorX()
 otherHalf.reverse()
+
+#make a pointy tip
+ThisGCode = G1Code(X=arm_length+(arm_length/10.0),Y=0,Z=0, F=1500)
+
+#join em together
+SpikyArm.append(ThisGCode)
 SpikyArm.extend(otherHalf)
 
 ThisGCodeStar = myPolyLine()
