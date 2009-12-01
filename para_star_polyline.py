@@ -74,10 +74,23 @@ class myPolyLine:
 	def extend(self,polyline):
 		for gcode in polyline.listofcodes:
 			self.listofcodes.append(gcode.Clone())
+			
+	def Clone(self):
+		ClonePolyLine = myPolyLine()
+		for gcode in self.listofcodes:
+			ClonePolyLine.append(gcode.Clone())
+		return ClonePolyLine
 		
 	def rotate(self,angle):
 		for gcode in self.listofcodes:
 			gcode.rotate(angle)
+			
+	def mirrorX(self):
+		for gcode in self.listofcodes:
+			gcode.Y = -1*(gcode.Y)
+			
+	def reverse(self):
+		self.listofcodes.reverse()
 
 filename = "test.gcode"
 
@@ -85,36 +98,70 @@ filename = "test.gcode"
 FILE = open(filename,"w")
 FILE.writelines("G21\n")
 FILE.writelines("G90\n")
+FILE.writelines("G92 X0 Y0 Z0\n")
 FILE.writelines("M103\n")
 FILE.writelines("M105\n")
 FILE.writelines("M104 S220.0\n")
+FILE.writelines("M6 T0\n")
+FILE.writelines("G04 P5000\n")
+#FILE.writelines("M101\n")
+FILE.writelines("M103\n") 
+FILE.writelines("M01 (The heater is warming up and will do a test extrusion.  Click yes after you have cleared the nozzle of the extrusion.)\n")
+FILE.writelines("G0 Z0	(Go back to zero.)\n")
+FILE.writelines("G21\n")
+FILE.writelines("G90\n")
+FILE.writelines("G28\n")
+FILE.writelines("M103\n")
+FILE.writelines("M105\n")
+FILE.writelines("M108 S225.0\n")
+FILE.writelines("M104 S230.0\n")
 FILE.writelines("M101\n")
 
 #build a single arm as a list of GCodes
 ThisGCodeArm = myPolyLine()
-ThisGCode = G1Code(X=0.5, Y=0.5, Z=0, F=700)
+ThisGCode = G1Code(X=0.5, Y=0.5, Z=0, F=1500)
 ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=0.5, Y=10, Z=0, F=700)
+ThisGCode = G1Code(X=0.5, Y=10, Z=0, F=1500)
 ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=0, Y=10.5, Z=0, F=700)
+ThisGCode = G1Code(X=0, Y=10.5, Z=0, F=1500)
 ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=-0.5, Y=10, Z=0, F=700)
+ThisGCode = G1Code(X=-0.5, Y=10, Z=0, F=1500)
 ThisGCodeArm.append(ThisGCode)
-ThisGCode = G1Code(X=-0.5, Y=0.5, Z=0, F=700)
+ThisGCode = G1Code(X=-0.5, Y=0.5, Z=0, F=1500)
 ThisGCodeArm.append(ThisGCode)
 
-#FILE.writelines(str(ThisGCodeArm))
+#make an arm with "spikes"
+SpikyArm = myPolyLine()
+ThisGCode = G1Code(X=0.5, Y=0.5, Z=0, F=1500)
+SpikyArm.append(ThisGCode)
+x1 = 2
+y1 = 0.5
+spike_length = 5
+x2 = spike_length*math.cos(math.radians(30))
+y2 = spike_length*math.sin(math.radians(30))
+x3 = x2
+y3 = 0.5
+ThisGCode = G1Code(X=x1, Y=y1, Z=0, F=1500)
+SpikyArm.append(ThisGCode)
+ThisGCode = G1Code(X=x2, Y=y2, Z=0, F=1500)
+SpikyArm.append(ThisGCode)
+ThisGCode = G1Code(X=x3, Y=y3, Z=0, F=1500)
+SpikyArm.append(ThisGCode)
+ThisGCode = G1Code(X=10, Y=0.5, Z=0, F=1500)
+SpikyArm.append(ThisGCode)
 
-#for a in range(6):
-#	ThisGCodeArm.rotate(math.radians(60))
-#	FILE.writelines(str(ThisGCodeArm))
+otherHalf = SpikyArm.Clone()
+otherHalf.mirrorX()
+otherHalf.reverse()
+SpikyArm.extend(otherHalf)
 
 ThisGCodeStar = myPolyLine()
 
 for a in range(6):
-	ThisGCodeArm.rotate(math.radians(60))
-	ThisGCodeStar.extend(ThisGCodeArm)
-	
+	#ThisGCodeArm.rotate(math.radians(60))
+	SpikyArm.rotate(math.radians(60))
+	ThisGCodeStar.extend(SpikyArm)
+
 FILE.writelines(str(ThisGCodeStar))
 
 FILE.writelines("M103\n")
