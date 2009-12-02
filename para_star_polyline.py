@@ -109,6 +109,7 @@ filename = "test.gcode"
 
 #Open the output file and paste on the "headers"
 FILE = open(filename,"w")
+'''
 FILE.writelines("G21\n")
 FILE.writelines("G90\n")
 FILE.writelines("G92 X0 Y0 Z0\n")
@@ -129,35 +130,37 @@ FILE.writelines("M105\n")
 FILE.writelines("M108 S225.0\n")
 FILE.writelines("M104 S230.0\n")
 FILE.writelines("M101\n")
+'''
 
 #make half an arm with "spikes"
 arm_length = 16.0
 arm_thickness = 1.0
-#num_spikes = 4
-num_spikes = random.randint(1,4)
+#num_spikes = 1
+num_spikes = random.randint(2,5)
 gap_size = (arm_length/num_spikes)/2.0
+spacer = 0.5
 
 SpikyArm = myPolyLine()
-ThisGCode = G1Code(X=arm_thickness/2.0, Y=arm_thickness/2.0, Z=0, F=1500)
+ThisGCode = G1Code(X=arm_thickness, Y=arm_thickness/2.0, Z=1.11, F=1500)
 SpikyArm.append(ThisGCode)
 
 for spike_n in range(0,num_spikes):
 	#spike_length = arm_length/2.0
 	spike_length = random.random()*(arm_length/2.0)
-	x1 = gap_size*((spike_n*2))
+	x1 = spacer + gap_size*((spike_n*2))
 	y1 = arm_thickness/2.0
-	x2 = x1 + spike_length*math.cos(math.radians(30.0))
+	x2 = spacer + x1 + spike_length*math.cos(math.radians(30.0))
 	y2 = spike_length*math.sin(math.radians(30.0))
-	x3 = x1 + gap_size
+	x3 = spacer + x1 + gap_size
 	y3 = arm_thickness/2.0
-	ThisGCode = G1Code(X=x1, Y=y1, Z=0, F=1500)
+	ThisGCode = G1Code(X=x1, Y=y1, Z=1.11, F=1500)
 	SpikyArm.append(ThisGCode)
-	ThisGCode = G1Code(X=x2, Y=y2, Z=0, F=1500)
+	ThisGCode = G1Code(X=x2, Y=y2, Z=1.11, F=1500)
 	SpikyArm.append(ThisGCode)
-	ThisGCode = G1Code(X=x3, Y=y3, Z=0, F=1500)
+	ThisGCode = G1Code(X=x3, Y=y3, Z=1.11, F=1500)
 	SpikyArm.append(ThisGCode)
 
-ThisGCode = G1Code(X=arm_length, Y=arm_thickness/2.0, Z=0, F=1500)
+ThisGCode = G1Code(X=arm_length, Y=arm_thickness/2.0, Z=1.11, F=1500)
 SpikyArm.append(ThisGCode)
 
 #make a mirror image of the first half of the arm
@@ -166,7 +169,7 @@ otherHalf.mirrorX()
 otherHalf.reverse()
 
 #make a pointy tip
-ThisGCode = G1Code(X=arm_length+(arm_length/10.0),Y=0,Z=0, F=1500)
+ThisGCode = G1Code(X=arm_length+(arm_length/10.0),Y=0,Z=1.11, F=1500)
 
 #join em together
 SpikyArm.append(ThisGCode)
@@ -175,19 +178,21 @@ SpikyArm.extend(otherHalf)
 #join together 6 rotated copies of the spiky arm
 ThisGCodeStar = myPolyLine()
 for a in range(6):
-	SpikyArm.rotate(math.radians(60))
+	SpikyArm.rotate(math.radians(-60))
 	ThisGCodeStar.extend(SpikyArm)
 
 FILE.writelines(str(ThisGCodeStar)) #output the whole snowflake (one layer)
+FILE.writelines("M103\n")
 
-z_steps = 10
-layer_thickness = 0.4
+z_steps = 7
+layer_thickness = 0.35
 
 for z_step in range(z_steps):
 	ThisGCodeStar.bumpZ(layer_thickness)
+	FILE.writelines("M101\n")
 	FILE.writelines(str(ThisGCodeStar))
+	FILE.writelines("M103\n")
 
-FILE.writelines("M103\n")
 ThisGCode.Z = ThisGCode.Z + 10
 FILE.writelines(str(ThisGCode)+ "\n")
 FILE.writelines("M104 S0\n")
