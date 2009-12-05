@@ -8,11 +8,13 @@ http://www.thingiverse.com/thing:849
 
 License: CC-BY-SA
 
-My additions are the para_star* files.  The goal being to generate randomized snowflakes.
+This thing also lives at: http://www.thingiverse.com/thing:1388
+
+The goal being to generate randomized snowflakes.
 
 The code is pretty rough, but you get can something that works by using the following method:
 
-1. Generate a star using the para_star_polyline.py file.
+1. Generate a star using the para_ssnowflake.py file.
 
 2. Prepend the outputted test.gcode file with the raft etc found in the header.gcode file.
 
