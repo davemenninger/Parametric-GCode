@@ -1,5 +1,7 @@
 #Parametric GCode Star
 #
+# by Dave Menninger
+#
 #Generates a six pointed star in GCode.
 #Goal is to generate snowflakes algorithmically.
 #
