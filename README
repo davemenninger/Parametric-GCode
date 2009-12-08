@@ -1,3 +1,6 @@
+Randomized Parametric Snowflakes
+================================
+
 This project is a derivative of the code originally written by Allan Ecker, found at: 
 
 http://www.thingiverse.com/thing:747
@@ -10,13 +13,13 @@ License: CC-BY-SA
 
 This thing also lives at: http://www.thingiverse.com/thing:1388
 
-The goal being to generate randomized snowflakes.
+The script outputs a gcode file to make a snowflake on a MakerBot.  Some settings are hardcoded.
 
 The code is pretty rough, but you get can something that works by using the following method:
 
-1. Generate a star using the para_ssnowflake.py file.
+1. Generate a star using the para_snowflake.py file.
 
-2. Prepend the outputted test.gcode file with the raft etc found in the header.gcode file.
+2. Prepend the outputted snowflake.gcode file with the raft etc found in the header.gcode file.
 
 3. Send to makerbot!
 
