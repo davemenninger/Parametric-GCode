@@ -107,37 +107,15 @@ class myPolyLine:
 			gcode.Z = gcode.Z + layer_thickness
 
 
-filename = "test.gcode"
+filename = "snowflake.gcode"
 
 #Open the output file and paste on the "headers"
 FILE = open(filename,"w")
-'''
-FILE.writelines("G21\n")
-FILE.writelines("G90\n")
-FILE.writelines("G92 X0 Y0 Z0\n")
-FILE.writelines("M103\n")
-FILE.writelines("M105\n")
-FILE.writelines("M104 S220.0\n")
-FILE.writelines("M6 T0\n")
-FILE.writelines("G04 P5000\n")
-#FILE.writelines("M101\n")
-FILE.writelines("M103\n") 
-FILE.writelines("M01 (The heater is warming up and will do a test extrusion.  Click yes after you have cleared the nozzle of the extrusion.)\n")
-FILE.writelines("G0 Z0	(Go back to zero.)\n")
-FILE.writelines("G21\n")
-FILE.writelines("G90\n")
-FILE.writelines("G28\n")
-FILE.writelines("M103\n")
-FILE.writelines("M105\n")
-FILE.writelines("M108 S225.0\n")
-FILE.writelines("M104 S230.0\n")
-FILE.writelines("M101\n")
-'''
 
 #make half an arm with "spikes"
-arm_length = 16.0
+arm_length = 20.0
 arm_thickness = 1.0
-#num_spikes = 1
+#num_spikes = 4
 num_spikes = random.randint(2,5)
 gap_size = (arm_length/num_spikes)/2.0
 spacer = 0.5
